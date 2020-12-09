@@ -341,11 +341,11 @@ impl UnionSchema {
     /// Optionally returns a reference to the schema matched by this value, as well as its position
     /// within this union.
     pub fn find_schema(&self, value: &types::Value) -> Option<(usize, &Schema)> {
-        let type_index = &SchemaKind::from(value);
-        self.variant_index
-            .get(type_index)
-            .copied()
-            .map(|i| (i, &self.schemas[i]))
+        self.schemas
+            .iter()
+            .enumerate()
+            .filter(|(_, variant)| value.validate(variant))
+            .next()
     }
 }
 
